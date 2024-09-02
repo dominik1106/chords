@@ -4,25 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="./js/midi.js"></script>
 </head>
 <body>
     <h1>Hello World!</h1>
     
     <script>
-        let midi = null; // global MIDIAccess object
+        let midiAccess = null;
+        navigator.requestMIDIAccess().then((access) => {
+            midiAccess = access;
 
-        function onMIDISuccess(midiAccess) {
-        console.log("MIDI ready!");
-        midi = midiAccess;
-        console.log(midi)
+            midiAccess.addEventListener('statechange', deviceChanged);
+
+            const inputs = midiAccess.inputs;
+            inputs.forEach((input) => {
+                input.addEventListener('midimessage', onMessage);
+            });
+        }).catch((error) => {
+            console.error(`Failed to get MIDI access - ${error}`);
+        });
+
+        /*
+            Called whenever a Midi-device gets connected/disconnected.
+            Not supported on all browsers, i.e. Firefox does NOT call this event.
+            Use Chrome for this instead.
+        */
+        function deviceChanged(event) {
+            console.log(event);
         }
 
-        function onMIDIFailure(msg) {
-        console.error(`Failed to get MIDI access - ${msg}`);
+        function onMessage(value) {
+            console.log(value.data);
         }
-
-        navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
     </script>
 </body>
 </html>
