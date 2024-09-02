@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/midi.js"></script>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    
+    <script>
+        let midi = null; // global MIDIAccess object
+
+        function onMIDISuccess(midiAccess) {
+        console.log("MIDI ready!");
+        midi = midiAccess;
+        console.log(midi)
+        }
+
+        function onMIDIFailure(msg) {
+        console.error(`Failed to get MIDI access - ${msg}`);
+        }
+
+        navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+    </script>
+</body>
+</html>
